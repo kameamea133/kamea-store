@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&family=Roboto:wght@100;300;400;500;700;900&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary: #e63946;
+  --second: #f4a261;
+  --bgColor: #264653;
+}
+
+h1,
+h2,
+h4,
+p {
+  color: #ffffff;
+  /* font-family: 'Great Vibes', cursive; */
+  font-family: 'Roboto', sans-serif;
+}
+
+body {
+  background: var(--bgColor);
+  font-family: 'Roboto', sans-serif;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/*--------------------------------------------------------------
+# Sections General
+--------------------------------------------------------------*/
+
+section {
+  position: relative;
+  overflow: hidden;
+  padding: 120px 0 20px;
+  width: 100%;
+  min-height: 100vh;
+  transition: ease-in-out 1s;
+  transform-origin: bottom;
+  z-index: 1100;
+}
+
+section .section-title {
+  position: relative;
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 1.6rem;
+  letter-spacing: 1px;
+  margin-bottom: 30px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+section .section-title::after {
+  position: absolute;
+  content: '';
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -30px;
+  height: 5px;
+  width: 50%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--primary),
+    var(--primary),
+    transparent
+  );
+  z-index: 1000;
+}
