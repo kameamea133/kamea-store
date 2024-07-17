@@ -12,7 +12,7 @@ function ItemCard({ item }) {
   };
 
   const handleRemoveFromCollection = prod => {
-    setCollection(collection.filter(item => item._id !== prod._id));
+    setCollection(collection.filter(item => item.id !== prod._id));
   };
 
   return (
@@ -47,7 +47,7 @@ function ItemCard({ item }) {
             ${((1 - item.discount) * item.price).toFixed(2)}
           </span>
         </div>
-        <Link className="addBag" to={`/items/${item._id}`}>
+        <Link className="addBag" to={`/items/${item.id}`}>
           <i className="bi bi-bag-plus-fill"></i>
         </Link>
       </div>

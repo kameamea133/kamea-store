@@ -25,7 +25,7 @@ function Header() {
     setOpen(!open);
   };
 
-  console.log(navList)
+
 
   return (
     <header

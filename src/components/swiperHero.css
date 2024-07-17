@@ -13,6 +13,7 @@
     cursor: pointer;
     box-shadow: 0px 0x 15px rgba(255, 255, 255, 0.1),
       5px 5px 15px rgba(0, 0, 0, 0.35);
+      
   }
   
   .swiper-slide img {
@@ -24,8 +25,10 @@
     border-radius: 20px;
   }
   
+
   .swiper-slide img:hover {
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+    
   }
   
   @media (max-width: 768px) {

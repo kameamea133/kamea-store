@@ -8,12 +8,12 @@ import './itemDetails.css';
 
 function ItemDetails() {
   const { bag, setBag } = useContext(AppContext);
-  const [item, setItem] = useState({});
+  const [item, setItem] = useState();
   const [qty, setQty] = useState(1);
   const [itemAdded, setItemAdded] = useState({ ...item, qty: 1, size: 'M' });
-
+  const [loading, setLoading] = useState(true);
   const { id } = useParams();
-
+  console.log(item)
   const sizesList = [
     { id: 1, name: 'XS', active: false },
     { id: 2, name: 'S', active: false },
@@ -29,7 +29,7 @@ function ItemDetails() {
       const docRef = doc(db, 'items', id);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        const data = docSnap.data();
+        const data = docSnap.data(); 
         setItem(data);
         setItemAdded({ ...data, qty: 1, size: 'M' });
       } else {
@@ -37,12 +37,16 @@ function ItemDetails() {
       }
     } catch (e) {
       console.error('Error fetching data: ', e);
+    }finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchData();
   }, [id]);
+
+  
 
   const increaseQty = () => {
     if (qty > 99) {
@@ -79,20 +83,24 @@ function ItemDetails() {
     if (bag.includes(item)) return;
     setBag([...bag, item]);
   };
- console.log(item)
+ 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="itemDetails">
       <div className="content">
         <div className="container-fluid">
           <div className="row p-5">
             <div className="col-lg-5">
-              <img className="img-fluid itemImg" src={item.image} alt={item.title} />
+              <img className="img-fluid itemImg" src={item.bgImg} alt={item.title} />
             </div>
             <div className="col-lg-5">
               <h2>{item.title}</h2>
               <div className="itemPrice">
                 <h4 className="price">
-                  Price: ${item.price && item.price.toLocaleString('en-US')}
+                  Price: €{item.price && item.price.toLocaleString('en-FR')}
                 </h4>
                 {item.discount !== 0 && (
                   <>
@@ -100,7 +108,7 @@ function ItemDetails() {
                       <i>{item.discount * 100}% OFF</i>
                     </h4>
                     <h4 className="currentPrice">
-                      Now: ${((1 - item.discount) * item.price).toFixed(2)}
+                      Now: €{((1 - item.discount) * item.price).toFixed(2)}
                     </h4>
                   </>
                 )}
