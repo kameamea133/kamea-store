@@ -21,7 +21,7 @@ header {
   }
   
   .logo {
-    font-family: 'Great Vibes', cursive;
+    font-family: 'Gloria Hallelujah', cursive;
     font-size: 35px;
     color: #ffffff;
     letter-spacing: 2px;
@@ -129,6 +129,9 @@ header {
   .nav-mobile li a:hover {
     color: var(--primary);
   }
+
+
+  
   
   @media (max-width: 768px) {
     header {

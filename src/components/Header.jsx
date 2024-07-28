@@ -1,15 +1,22 @@
 import { useState, useContext } from 'react';
 import './header.css';
 import { AppContext } from '../App';
-
 import navListData from '../data/navListData';
 import NavListItem from './NavListItem';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { getAuth, signOut } from 'firebase/auth';
+import { useAuth } from '../AuthProvider';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 function Header() {
   const { collection, bag, scroll, sectionRefs: refs } = useContext(AppContext);
   const [navList, setNavList] = useState(navListData);
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+  const { currentUser, username } = useAuth();
+
+  
 
   const handleNavOnClick = id => {
     const newNavList = navList.map(nav => {
@@ -25,16 +32,24 @@ function Header() {
     setOpen(!open);
   };
 
-
+  const handleLogout = async () => {
+    const auth = getAuth();
+    try {
+      await signOut(auth);
+      navigate('/login');
+    } catch (error) {
+      console.error('Failed to log out', error);
+    }
+  };
 
   return (
     <header
       className={`${scroll > 100 ? 'scrolled' : undefined}`}
       ref={refs.header}
     >
-      <a href="/" className="logo">
+      <Link to="/" className="logo">
         Kamea Store
-      </a>
+      </Link>
 
       <ul className="nav">
         {navList.map(nav => (
@@ -49,20 +64,28 @@ function Header() {
       </ul>
 
       <div className="userItems">
-        <Link to="/collection" className="icon">
+        <Link to="/collection" className="icon " data-bs-toggle="tooltip" title="My Collection">
           <i className="bi bi-heart-fill"></i>
           <span className="like">{collection.length}</span>
         </Link>
-        <Link to="/bag" className="icon">
+        <Link to="/bag" className="icon" data-bs-toggle="tooltip" title="My Bag">
           <i className="bi bi-bag-fill"></i>
           <span className="bag">{bag.length}</span>
         </Link>
-        <Link to="/login" className="icon">
-          <i className="bi bi-box-arrow-in-right"></i>
-        </Link>
-        <Link to="/register" className="icon">
-          <i className="bi bi-person-plus-fill"></i>
-        </Link>
+        {currentUser ? (
+          <>
+            <a className="icon" onClick={handleLogout} data-bs-toggle="tooltip" title="Logout">
+              <i className="bi bi-box-arrow-in-right"></i>
+            </a>
+            <Link to="/profile" className="icon" data-bs-toggle="tooltip" title={username || currentUser.email}>
+              <i className="bi bi-person-fill"></i>
+            </Link>
+          </>
+        ) : (
+          <Link to="/register" className="icon" data-bs-toggle="tooltip" title="Register">
+            <i className="bi bi-person-plus-fill"></i>
+          </Link>
+        )}
       </div>
 
       {open ? (

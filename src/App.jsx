@@ -12,14 +12,16 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import { AuthProvider } from './AuthProvider';
 import PrivateRoute from './PrivateRoute';
-import { db } from './firebase'; // Importer Firestore
+import { db } from './firebase';
 import { collection, getDocs } from 'firebase/firestore';
+
 
 export const AppContext = React.createContext();
 
+
 function App() {
   const [items, setItems] = useState([]);
-  const [collectionData, setCollection] = useState([]); // Renommer pour éviter les conflits
+  const [collectionData, setCollection] = useState([]); 
   const [bag, setBag] = useState([]);
   const [scroll, setScroll] = useState(0);
 
@@ -50,19 +52,36 @@ function App() {
     };
   }, [scroll]);
 
-  const fetchData = async () => {
-    try {
-      const querySnapshot = await getDocs(collection(db, 'items'));
-      const itemsData = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      setItems(itemsData);
-    } catch (e) {
-      console.error('Error fetching data: ', e);
-    }
-  };
+ 
 
   useEffect(() => {
-    fetchData();
+    const fetchItems = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'items'));
+        const itemsList = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setItems(itemsList);
+      } catch (error) {
+        console.error("Error fetching items from Firebase: ", error);
+      }
+    };
+
+    fetchItems();
   }, []);
+
+  useEffect(() => {
+    const storedCollection = JSON.parse(localStorage.getItem('collectionData'));
+    if (storedCollection) {
+      setCollection(storedCollection);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('collectionData', JSON.stringify(collectionData));
+  }, [collectionData]);
+
 
   return (
     <>
@@ -70,7 +89,7 @@ function App() {
         value={{
           items,
           setItems,
-          collection: collectionData, // Renommer pour éviter les conflits
+          collection: collectionData,
           setCollection,
           bag,
           setBag,
@@ -87,6 +106,7 @@ function App() {
             <Route path="/items/:id" element={<ItemDetails />} />
             <Route element={<PrivateRoute />}>
               <Route path="/bag" element={<Bag />} />
+              <Route path="/collection" element={<Collection />} />
             </Route>
           </Routes>
         </AuthProvider>

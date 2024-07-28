@@ -1,5 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import { AppContext } from '../App';
+import { useAuth } from '../AuthProvider';
 import './bag.css';
 
 import BagItem from '../components/BagItem';
@@ -7,6 +8,7 @@ import BagItem from '../components/BagItem';
 function Bag() {
   const { bag: items } = useContext(AppContext);
   const [total, setTotal] = useState(0);
+  const { username } = useAuth();
 
   const handleTotalPayment = () => {
     let total = items
@@ -21,17 +23,19 @@ function Bag() {
     setTotal(handleTotalPayment());
   }, [items]);
 
- 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <div className="shoppingBag">
-    shopping bag page
+    
       <div className="container">
         <div className="row mb-2">
           <h1>My Shopping Bag</h1>
         </div>
         {items.length === 0 ? (
-          <h2>Your bag is empty</h2>
+          <h2>Your bag is empty {username}</h2>
         ) : (
           <>
             <div className="row">

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useContext } from 'react';
 import SwiperHero from './SwiperHero';
 import { AppContext } from '../App';
@@ -45,10 +46,10 @@ function Hero({ items, setItems }) {
             />
             <div className={`content ${item.active ? 'active' : undefined}`}>
               <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe,
-                dolore!
+                {item.description}
               </p>
-              <h1>Lorem ipsum dolor sit amet</h1>
+              <h1>{item.title}</h1>
+              <p>{item.price}€</p>
               <Link to={`/items/${item.id}`} className="mainButton">
                 Shop Now <i className="bi bi-cart2"></i>
               </Link>
@@ -68,7 +69,7 @@ function Hero({ items, setItems }) {
             <div className="subtitle">
              
               <span className={`number ${item.active ? 'active' : undefined}`}>
-                0{item.id}
+                {item.id}
               </span>
             </div>
           </div>

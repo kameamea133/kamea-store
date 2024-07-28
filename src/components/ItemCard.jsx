@@ -1,25 +1,34 @@
-import { useContext } from 'react';
+/* eslint-disable react/prop-types */
+import { useContext, useState } from 'react';
 import { AppContext } from '../App';
-
 import './itemCard.css';
-import { Link } from 'react-router-dom';
+import ItemDetailsModal from './ItemDetailsModal';
 
 function ItemCard({ item }) {
   const { collection, setCollection } = useContext(AppContext);
+  const [showModal, setShowModal] = useState(false);
 
   const handleAddToCollection = prod => {
     setCollection([...collection, prod]);
   };
 
   const handleRemoveFromCollection = prod => {
-    setCollection(collection.filter(item => item.id !== prod._id));
+    setCollection(collection.filter(item => item.id !== prod.id));
+  };
+
+  const handleShowModal = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
   };
 
   return (
     <div className="col-xl-3 col-lg-4 col-md-6">
       <div className="itemCard">
         <img src={item.bgImg} alt={item.title} className="img-fluid" />
-        <Link
+        <button
           className={`like ${collection.includes(item) ? 'active' : undefined}`}
           onClick={
             collection.includes(item)
@@ -28,7 +37,7 @@ function ItemCard({ item }) {
           }
         >
           <i className="bi bi-bookmark-fill"></i>
-        </Link>
+        </button>
         <div className="itemFeature">
           <span className="itemType">{item.category}</span>
           <span className="itemPromotion">{item.promotion}</span>
@@ -47,9 +56,13 @@ function ItemCard({ item }) {
             ${((1 - item.discount) * item.price).toFixed(2)}
           </span>
         </div>
-        <Link className="addBag" to={`/items/${item.id}`}>
+        <button className="addBag" onClick={handleShowModal}>
           <i className="bi bi-bag-plus-fill"></i>
-        </Link>
+        </button>
+
+        {showModal && (
+          <ItemDetailsModal item={item} show={showModal} onHide={handleCloseModal} />
+        )}
       </div>
     </div>
   );

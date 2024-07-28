@@ -1,19 +1,19 @@
 import { useState, useEffect, useContext } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { AppContext } from '../App';
-import { db } from '../firebase'; // Importer Firestore
+import { db } from '../firebase';
 import { doc, getDoc } from 'firebase/firestore';
 
 import './itemDetails.css';
 
 function ItemDetails() {
   const { bag, setBag } = useContext(AppContext);
-  const [item, setItem] = useState();
-  const [qty, setQty] = useState(1);
-  const [itemAdded, setItemAdded] = useState({ ...item, qty: 1, size: 'M' });
+  const [item, setItem] = useState(null);
+  const [qty, setQty] = useState(1); 
+  const [itemAdded, setItemAdded] = useState(null);
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
-  console.log(item)
+  
   const sizesList = [
     { id: 1, name: 'XS', active: false },
     { id: 2, name: 'S', active: false },
@@ -24,20 +24,22 @@ function ItemDetails() {
 
   const [sizes, setSizes] = useState(sizesList);
 
+  
   const fetchData = async () => {
     try {
       const docRef = doc(db, 'items', id);
       const docSnap = await getDoc(docRef);
+
       if (docSnap.exists()) {
-        const data = docSnap.data(); 
-        setItem(data);
-        setItemAdded({ ...data, qty: 1, size: 'M' });
+        const item = { id: docSnap.id, ...docSnap.data() };
+        setItem(item);
+        setItemAdded({ ...item, qty: 1, size: 'M' });
       } else {
-        console.error('No such document!');
+        console.error('No such item!');
       }
-    } catch (e) {
-      console.error('Error fetching data: ', e);
-    }finally {
+    } catch (error) {
+      console.error('Error fetching data: ', error);
+    } finally {
       setLoading(false);
     }
   };
@@ -46,15 +48,18 @@ function ItemDetails() {
     fetchData();
   }, [id]);
 
-  
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const increaseQty = () => {
     if (qty > 99) {
       setQty(99);
       return;
     }
-    setQty(qty + 1);
-    setItemAdded({ ...itemAdded, qty: qty + 1 });
+    const newQty = qty + 1;
+    setQty(newQty);
+    setItemAdded(prevItem => ({ ...prevItem, qty: newQty }));
   };
 
   const decreaseQty = () => {
@@ -62,8 +67,9 @@ function ItemDetails() {
       setQty(1);
       return;
     }
-    setQty(qty - 1);
-    setItemAdded({ ...itemAdded, qty: qty - 1 });
+    const newQty = qty - 1;
+    setQty(newQty);
+    setItemAdded(prevItem => ({ ...prevItem, qty: newQty }));
   };
 
   const handleSizeChange = id => {
@@ -85,7 +91,11 @@ function ItemDetails() {
   };
  
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="display-4 text-danger">Loading...</div>; 
+  }
+
+  if (!item) {
+    return <div>No item found.</div>;
   }
 
   return (

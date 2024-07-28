@@ -1,7 +1,8 @@
 // src/Login.js
 import { useState } from 'react';
 import { useAuth } from '../AuthProvider';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import './login.css';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -20,7 +21,8 @@ function Login() {
   };
 
   return (
-    <div style={{marginTop: "200px"}}>
+    <div className="loginPage">
+    <div className="loginForm">
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <input
@@ -38,8 +40,12 @@ function Login() {
           required
         />
         <button type="submit">Log In</button>
+        <Link to="/register" className="registerLink">
+          Create an account
+        </Link>
       </form>
     </div>
+  </div>
   );
 }
 

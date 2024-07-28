@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import './navListItem.css';
 import { Link, useLocation } from 'react-router-dom';
 
